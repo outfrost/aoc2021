@@ -1,18 +1,24 @@
 //! https://adventofcode.com/2021/day/1
 
 use std::fs::File;
-use std::io::{self, BufRead};
+use std::io::{BufRead, BufReader};
 use std::str::FromStr;
 
 fn main() {
-	let file = File::open("data/1/input.txt").unwrap();
-
-	// How many measurements are larger than the previous measurement?
-	let depth_increases = io::BufReader::new(file)
+	let samples: Vec<i32> = BufReader::new(File::open("data/1/input.txt").unwrap())
 		.lines()
 		.filter_map(Result::ok)
 		.map(|s| i32::from_str(&s))
 		.filter_map(Result::ok)
+		.collect();
+
+	if samples.len() == 0 {
+		eprintln!("warning: no valid samples read");
+	}
+
+	// How many measurements are larger than the previous measurement?
+	let depth_increases = samples
+		.iter()
 		// functional witchcraft!
 		.fold((0, None), |(mut count, last), sample| {
 			if let Some(l) = last {
@@ -24,5 +30,29 @@ fn main() {
 		})
 		.0;
 
-	println!("{}", depth_increases);
+	println!("increases in depth samples: {}", depth_increases);
+
+	// How many sliding 3-sample window sums are larger than previous ones?
+	let mut last_window = (None, None, None);
+
+	let window_increases = samples
+		.iter()
+		// more witchcraft
+		.fold(0, |mut count, sample| {
+			match last_window {
+				(Some(a), Some(b), Some(c)) => {
+					if b + c + sample > a + b + c {
+						count += 1;
+					}
+				}
+				_ => (),
+			}
+			last_window = (last_window.1, last_window.2, Some(sample));
+			count
+		});
+
+	println!(
+		"increases in sliding 3-sample windows: {}",
+		window_increases
+	);
 }
