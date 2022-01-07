@@ -1,13 +1,11 @@
 //! https://adventofcode.com/2021/day/1
 
-use std::fs::File;
-use std::io::{BufRead, BufReader};
 use std::str::FromStr;
 
+use aoc2021::*;
+
 fn main() {
-	let samples: Vec<i32> = BufReader::new(File::open("data/1/input.txt").unwrap())
-		.lines()
-		.filter_map(Result::ok)
+	let samples: Vec<i32> = read_lines("data/1/input.txt")
 		.map(|s| i32::from_str(&s))
 		.filter_map(Result::ok)
 		.collect();
