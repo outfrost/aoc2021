@@ -13,8 +13,9 @@ fn main() {
 		.filter_map(|(cmd, arg_str)| match i32::from_str(&arg_str) {
 			Ok(arg) => Some((cmd, arg)),
 			_ => None,
-		}).collect();
-	
+		})
+		.collect();
+
 	let (pos, depth) = sequence
 		.iter()
 		.fold((0, 0), |(pos, depth), (cmd, arg)| match &cmd[..] {
@@ -30,18 +31,19 @@ fn main() {
 	println!("multiplied together: {}", pos * depth);
 	println!();
 
-	let (_, pos, depth) = sequence
-		.iter()
-		.fold((0, 0, 0), |(aim, pos, depth), (cmd, arg)| match &cmd[..] {
-			"forward" => (aim, pos + arg, depth + (aim * arg)),
-			"down" => (aim + arg, pos, depth),
-			"up" => (aim - arg, pos, depth),
-			_ => (aim, pos, depth),
-		});
+	let (_, pos, depth) =
+		sequence
+			.iter()
+			.fold((0, 0, 0), |(aim, pos, depth), (cmd, arg)| match &cmd[..] {
+				"forward" => (aim, pos + arg, depth + (aim * arg)),
+				"down" => (aim + arg, pos, depth),
+				"up" => (aim - arg, pos, depth),
+				_ => (aim, pos, depth),
+			});
 
 	println!("part 2 rules");
 	println!("horizontal position: {}", pos);
 	println!("depth: {}", depth);
 	println!("multiplied together: {}", pos * depth);
-	println!();	
+	println!();
 }
